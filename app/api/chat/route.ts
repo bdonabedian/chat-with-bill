@@ -1,5 +1,4 @@
-import { streamText } from "ai";
-import { anthropic } from "@ai-sdk/anthropic";
+import Anthropic from "@anthropic-ai/sdk";
 import blogs from "../../blogs.json";
 
 export const maxDuration = 60;
@@ -27,11 +26,42 @@ ${blogContext}`;
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
-  const result = streamText({
-    model: anthropic("claude-sonnet-4-5-20250514"),
+  const client = new Anthropic();
+
+  const stream = await client.messages.stream({
+    model: "claude-sonnet-4-5-20250514",
+    max_tokens: 1024,
     system: systemPrompt,
-    messages,
+    messages: messages.map((m: { role: string; content: string }) => ({
+      role: m.role,
+      content: m.content,
+    })),
   });
 
-  return result.toTextStreamResponse();
+  const encoder = new TextEncoder();
+
+  const readable = new ReadableStream({
+    async start(controller) {
+      try {
+        for await (const event of stream) {
+          if (
+            event.type === "content_block_delta" &&
+            event.delta.type === "text_delta"
+          ) {
+            controller.enqueue(encoder.encode(event.delta.text));
+          }
+        }
+        controller.close();
+      } catch (err) {
+        controller.error(err);
+      }
+    },
+  });
+
+  return new Response(readable, {
+    headers: {
+      "Content-Type": "text/plain; charset=utf-8",
+      "Transfer-Encoding": "chunked",
+    },
+  });
 }
