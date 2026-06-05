@@ -2,6 +2,8 @@ import { streamText } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import blogs from "../../blogs.json";
 
+export const maxDuration = 60;
+
 const blogContext = Object.entries(blogs)
   .map(([title, content]) => `## ${title}\n\n${content}`)
   .join("\n\n---\n\n");

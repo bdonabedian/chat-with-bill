@@ -29,9 +29,7 @@ export default function Home() {
     inputRef.current?.focus();
   }, []);
 
-  async function handleSubmit(e?: FormEvent, overrideInput?: string) {
-    e?.preventDefault();
-    const text = overrideInput ?? input;
+  async function sendMessage(text: string) {
     if (!text.trim() || isLoading) return;
 
     const userMessage: Message = { role: "user", content: text.trim() };
@@ -47,7 +45,7 @@ export default function Home() {
         body: JSON.stringify({ messages: newMessages }),
       });
 
-      if (!res.ok) throw new Error("Failed to get response");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
       const reader = res.body?.getReader();
       const decoder = new TextDecoder();
@@ -77,6 +75,11 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  function handleSubmit(e?: FormEvent) {
+    e?.preventDefault();
+    sendMessage(input);
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -123,7 +126,7 @@ export default function Home() {
               {SUGGESTIONS.map((s) => (
                 <button
                   key={s}
-                  onClick={() => handleSubmit(undefined, s)}
+                  onClick={() => sendMessage(s)}
                   className="text-left px-4 py-3 rounded-xl border border-border bg-surface hover:border-accent/40 hover:bg-accent/5 transition-all text-sm text-foreground"
                 >
                   {s}
@@ -154,7 +157,7 @@ export default function Home() {
                 </div>
               </div>
             ))}
-            {isLoading && messages[messages.length - 1]?.role === "assistant" && messages[messages.length - 1]?.content === "" && (
+            {isLoading && (messages.length === 0 || messages[messages.length - 1]?.content === "") && (
               <div className="flex gap-3 animate-fade-in">
                 <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center flex-shrink-0 mt-1">
                   <span className="text-white text-xs font-bold">B</span>
