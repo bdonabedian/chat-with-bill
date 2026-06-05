@@ -26,7 +26,7 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
-    const apiKey = process.env.ANTHROPIC_API_KEY;
+    const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
     if (!apiKey) {
       return Response.json({ error: "ANTHROPIC_API_KEY not configured" }, { status: 500 });
     }
