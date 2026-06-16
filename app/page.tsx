@@ -103,7 +103,7 @@ export default function Home() {
           </div>
           <div>
             <h1 className="text-base font-semibold text-foreground leading-tight">Chat with Bill, about Events</h1>
-            <p className="text-xs text-muted">Event planning insights from 32 blog posts</p>
+            <p className="text-xs text-muted">Event planning insights from 54 blog posts, interviews, lectures, and articles</p>
           </div>
         </div>
       </header>
@@ -119,7 +119,7 @@ export default function Home() {
             </div>
             <h2 className="text-2xl font-semibold text-foreground mb-2">Ask Bill about events</h2>
             <p className="text-muted text-center max-w-md mb-8">
-              Drawing from decades of event planning experience across 32 blog posts.
+              Drawing from decades of event planning experience across 54 blog posts, interviews, lectures, and press articles.
               Ask anything about planning, budgeting, logistics, or running successful events.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg">
@@ -205,7 +205,7 @@ export default function Home() {
             </button>
           </div>
           <p className="text-center text-xs text-muted mt-2">
-            Responses are based on Bill&apos;s blog posts about event planning.
+            Responses are based on Bill&apos;s blog posts, interviews, lectures, and press articles about event planning.
           </p>
         </form>
       </div>
